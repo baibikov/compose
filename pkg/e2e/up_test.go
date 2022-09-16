@@ -1,3 +1,6 @@
+//go:build !windows
+// +build !windows
+
 /*
    Copyright 2022 Docker Compose CLI authors
 
@@ -19,6 +22,7 @@ package e2e
 import (
 	"context"
 	"os/exec"
+	"runtime"
 	"syscall"
 	"testing"
 	"time"
@@ -39,6 +43,9 @@ func TestUpServiceUnhealthy(t *testing.T) {
 }
 
 func TestUpDependenciesNotStopped(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("skipping on windows")
+	}
 	c := NewParallelCLI(t, WithEnv(
 		"COMPOSE_PROJECT_NAME=up-deps-stop",
 	))
